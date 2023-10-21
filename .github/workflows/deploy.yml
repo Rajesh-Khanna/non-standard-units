@@ -26,6 +26,7 @@ jobs:
           npm config set //registry.npmjs.org/:_authToken=$GH_PAT
           git config --global user.name $GH_USERNAME
           git config --global user.email $GH_USERNAME@users.noreply.github.com
+          echo "CONFIG setup done"
           npm run deploy
         env:
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
