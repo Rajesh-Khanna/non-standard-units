@@ -23,13 +23,9 @@ jobs:
 
       - name: Set Git Config
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$GH_PAT
-          git config user.name $GH_USERNAME
-          git config user.email $GH_EMAILID
-        env:
-            GH_USERNAME: ${{ secrets.GH_USERNAME }}
-            GH_PAT: ${{ secrets.GH_PAT }}
-            GH_EMAILID: ${{ secrets.GH_EMAILID }}
+          git config --global user.email 'github-actions@github.com'
+          git config --global user.name 'github-actions'
+          git remote set-url origin https://${{ secrets.GH_PAT }}@github.com/Rajesh-Khanna/non-standard-units.git
         
       - name: Build and Deploy
         run: |
