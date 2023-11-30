@@ -29,6 +29,8 @@ const Search = ({convertionState}) => {
 
     const handleFind = () => {
 
+        if(measureValue == 0) return;
+
         const standardValue = getStandardValues(measureOption, measureValue, selectedUnit);
 
         const bestConvertions = getBestNConvertions(measureOption, standardValue, convertionState);
