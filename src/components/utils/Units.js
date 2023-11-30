@@ -1,38 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
-import { Card, Button, Input, Select } from 'antd';
-const { Option } = Select;
+import { Radio } from 'antd';
+import { measureToUnitsMap } from './ConvertionUtils';
 
 const Units = ({measure, selectedUnit, setSelectedUnit}) => {
-
-    const lengthUnits = {
-        meter: 1,
-        km: 1000,
-        feet: 1,
-        inches: 1,
-        cm: 1,
-        "yd": 1,
-        "mi": 1,
-        nanometer: 1,
-        picometer: 1,
-        "Astronomical Unit (AU)": 1,
-        "light-year": 1
-    }
-
-    const massUnits = {
-        gram: 1,
-        kilograms: 1,
-        pound: 1,
-        Tonne: 1,
-        Ounce: 1,
-        Carat: 1,
-        "Atomic Mass Unit": 1
-    }
-
-    const measureToUnitsMap = {
-        Length: lengthUnits,
-        Weight: massUnits
-    };
 
     const [units, setUnits] = useState([]);
 
@@ -49,19 +19,21 @@ const Units = ({measure, selectedUnit, setSelectedUnit}) => {
       }, [measure]);
 
       const handleUnitChange = (value) => {
-        setSelectedUnit(value);
+        setSelectedUnit(value.target.value);
         // Perform any actions based on the selected unit if needed
       };
     
 
     return (
-    <Select value={selectedUnit} onChange={handleUnitChange}>
-        {units.map((item, index) => (
-            <Option key={index} value={item}>
-                {item}
-            </Option>
-        ))}
-    </Select>);
+        <Radio.Group value={selectedUnit} size='large' buttonStyle="solid" onChange={handleUnitChange} style={{margin: 10}}>
+            {units.map((item, index) => (
+                <Radio.Button key={index} value={item}>{item}</Radio.Button>
+            ))}
+            <Radio.Button value="Weight">Weight</Radio.Button>
+            {/* <Radio.Button value="Time">Time</Radio.Button>
+            <Radio.Button value="Temperature">Temperature</Radio.Button>
+            <Radio.Button value="Current">Current</Radio.Button> */}
+        </Radio.Group>)
 }
 
 export default Units;

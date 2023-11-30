@@ -1,52 +1,65 @@
 import React, { useState } from 'react';
 import Units from './utils/Units';
+import { getStandardValues, getBestNConvertions } from './utils/ConvertionUtils';
 
-import { Card, Button, Input, Select } from 'antd';
-const { Option } = Select;
-
+import { Radio, List, Card, Button, InputNumber, Layout } from 'antd';
+const { Header, Content, Footer } = Layout;
 const Search = ({convertionState}) => {
 
     const [measureOption, setMeasureOption] = useState('Length');
     const [results, setResults] = useState([]);
     const [selectedUnit, setSelectedUnit] = useState('');
+    const [measureValue, setMeasureValue] = useState(0);
 
-    const { Option } = Select;
 
     const handleMeasureChange = (event) => {
         console.log({"value": event})
-        setMeasureOption(event);
+        setMeasureOption(event.target.value);
       };
 
     const measure = (
-        <Select defaultValue="Length" onChange={handleMeasureChange}>
-          <Option value="Length">Length</Option>
-          <Option value="Weight">Weight</Option>
-          {/* <Option value="Time">Time</Option>
-          <Option value="Temperature">Temperature</Option>
-          <Option value="Current">Current</Option> */}
-        </Select>
+        <Radio.Group defaultValue="Length" size='large' value={measureOption} buttonStyle="solid" onChange={handleMeasureChange} style={{margin: 10}}>
+            <Radio.Button value="Length">Length</Radio.Button>
+            <Radio.Button value="Weight">Weight</Radio.Button>
+            {/* <Radio.Button value="Time">Time</Radio.Button>
+            <Radio.Button value="Temperature">Temperature</Radio.Button>
+            <Radio.Button value="Current">Current</Radio.Button> */}
+        </Radio.Group>
       );
 
     const handleFind = () => {
 
-        setResults([selectedUnit, selectedUnit, selectedUnit]);
+        const standardValue = getStandardValues(measureOption, measureValue, selectedUnit);
+
+        const bestConvertions = getBestNConvertions(measureOption, standardValue, convertionState);
+
+        setResults(bestConvertions);
 
     }
 
     return (<>
-        <div>
-            <Input addonBefore={measure} addonAfter={<Units measure={measureOption} selectedUnit={selectedUnit} setSelectedUnit={setSelectedUnit}/>} defaultValue="mysite" size="large" />
+        <Content>
+            { measure } <br />
+            <InputNumber onChange={setMeasureValue} value={measureValue} size="large" style={{width: "100%", textAlign:"center" }} /> <br/>
+            <Units measure={measureOption} selectedUnit={selectedUnit} setSelectedUnit={setSelectedUnit}/> <br/>
             <Button size='large' type="primary" onClick={handleFind}>Find</Button>
-        </div>
-        <div>
-        <Card title="Card title" style={{ width: 300, margin: 50, textAlign: 'left' }}>
-            {
-                results.map((value, index) => (
-                    <p key={index}>{index}: {value}</p>
-                ))
-            }
-        </Card>
-        </div>
+            <Card title="Results" style={{  margin: 50, textAlign: 'left' }}>
+
+                <List
+                    size="small"
+                    dataSource={results}
+                    renderItem={(value) =>                     
+                        {
+                                var multiple = Number((value[0] < 1 ? 1/value[0] : value[0]).toPrecision(3));
+                                
+                                var result = value[0] >= 1? "1/" + multiple + " of " + value[1] : multiple + " times " + value[1];    
+                                
+                                return (<List.Item> {result}</List.Item>)
+                            }}
+                />
+
+            </Card>
+        </Content>
     </>);
 }
 

@@ -4,16 +4,19 @@ import './App.css';
 import Home from './components/Home';
 import Search from './components/Search';
 import { fetchDataFromCSV } from './components/utils/DataLoader';
+import { rowProcessing } from './components/utils/RowProcessing';
 
 function App() {
   const [convertionState, setConvertionState] = useState({});
 
   useEffect(() => {
     fetchDataFromCSV()
-      .then(data => {
-        setConvertionState(data);
+      .then(({ headers, data}) => {
+        const convertions = rowProcessing(data);
 
-        console.log('Received data:', data);
+        setConvertionState(convertions);
+
+        console.log('Received data:', convertions);
       })
       .catch(err => {
         console.error('Error:', err);
